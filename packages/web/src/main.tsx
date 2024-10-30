@@ -1,18 +1,16 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./app";
-import "./index.css";
-import { Footer } from "./components";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './app/App'
+import { ThemeProvider } from './components/theme-provider'
+import { SearchFormProvider } from './components/search-form'
 
-const el = document.getElementById("root");
-if (el) {
-  const root = createRoot(el);
-  root.render(
-    <React.StrictMode>
-      <App />
-      <Footer />
-    </React.StrictMode>,
-  );
-} else {
-  throw new Error("Could not find root element");
-}
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <SearchFormProvider>
+        <App />
+      </SearchFormProvider>
+    </ThemeProvider>
+  </StrictMode>,
+)

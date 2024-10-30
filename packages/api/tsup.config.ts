@@ -7,8 +7,8 @@ export default defineConfig((options: Options) => ({
   ...options,
 }));
 
-/*
-import { defineConfig } from "tsup";
+
+/*import { defineConfig } from "tsup";
 import packageJson from "./package.json";
 
 export default defineConfig((options) => ({
@@ -33,5 +33,4 @@ export default defineConfig((options) => ({
     };
   },
   ...options,
-}));
-*/
+}));*/

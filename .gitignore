@@ -16,3 +16,4 @@ public/dist
 __pycache__
 logs/
 *.log
+.vscode

@@ -5,6 +5,7 @@ pkgs.mkShell {
     pkgs.python311
     pkgs.awscli2
     pkgs.geckodriver
+    pkgs.tmux
   ];
 
   shellHook = ''

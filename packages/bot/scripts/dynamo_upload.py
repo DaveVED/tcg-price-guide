@@ -25,7 +25,7 @@ from tqdm import tqdm
 from bot.logger import setup_logger
 
 DYNAMODB_TABLE_NAME = os.getenv('DYNAMODB_TABLE_NAME', 'table-name')
-JSON_FILE_PATH = project_root / 'data' / 'tcgplayer_nosql_data.json'
+JSON_FILE_PATH = project_root / 'data' / 'tcgplayer_nosql_data_updated.json'
 
 logger = setup_logger('dynamodb_uploader', project_root / 'logs' / 'dynamodb_upload.log')
 
