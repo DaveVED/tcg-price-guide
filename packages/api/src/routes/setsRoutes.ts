@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   cardsBySetAndCardNumber,
+  cardsBySetName,
   sets,
   setsByGame,
 } from "../controllers/setsController";
@@ -11,6 +12,7 @@ const setsPath = "/v1/sets";
 
 router.get(setsPath, sets);
 router.get(`${setsPath}/:game`, setsByGame);
-router.get(`${setsPath}/:game/:setName/number/:cardNumber`, cardsBySetAndCardNumber);
+router.get(`${setsPath}/:game/:setName/cards`, cardsBySetName);
+router.get(`${setsPath}/:game/:setName/cards/number/:cardNumber`, cardsBySetAndCardNumber);
 
 export default router;

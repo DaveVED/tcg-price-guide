@@ -1,1 +1,1 @@
-# Collectibles
+# TCG Price Guide

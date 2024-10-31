@@ -29,7 +29,14 @@ export class ReferenceTableStack extends cdk.Stack {
                 },
                 "sorkKeyAsPrimaryKey": {
                     partitionKey: "SK",
-                }
+                },
+                "gameNameAndSortKeyIndex": {
+                    partitionKey: "Game",
+                    sortKey: "SK",
+                },
+                "gameNameAsPrimaryKey": {
+                    partitionKey: "Game",
+                },
             },
         }).zor.table;
     };

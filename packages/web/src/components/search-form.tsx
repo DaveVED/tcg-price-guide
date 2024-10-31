@@ -69,7 +69,7 @@ export const SearchForm: React.FC = () => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Find Your Card's Value</CardTitle>
           <CardDescription>
-            Select a category and search for your card using the filters below or enter a card name or number.
+            Select a category and search for your card using the filters below. 
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -24,7 +24,7 @@ export class ReferenceApiStack extends cdk.Stack {
             runtime: lambda.Runtime.NODEJS_20_X,
             code: lambda.Code.fromAsset("lambda.zip"),
             handler: "lambda.handler",
-            timeout: cdk.Duration.seconds(30),
+            timeout: cdk.Duration.seconds(30)
           })
 
         new dsqr.aws.Api(this, "TCGReferenceApi", {

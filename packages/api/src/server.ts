@@ -5,6 +5,7 @@ import cors from "cors";
 import healthRoutes from "./routes/healthRoutes";
 import v1Routes from "./routes/v1Routes";
 import setsRoutes from "./routes/setsRoutes";
+import cardRoutes from "./routes/cardsRoutes";
 
 export const createServer = (): Express => {
   const app = express();
@@ -15,6 +16,7 @@ export const createServer = (): Express => {
     .use(cors())
     .use(v1Routes)
     .use(healthRoutes)
+    .use(cardRoutes)
     .use(setsRoutes);
 
   return app;

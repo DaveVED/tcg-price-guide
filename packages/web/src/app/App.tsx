@@ -1,5 +1,5 @@
 import { Header } from "@/components/header";
-import { SearchForm, useSearchForm } from "@/components/search-form";
+import { SearchForm } from "@/components/search-form";
 
 function App() {
   return (

@@ -13,22 +13,60 @@ import { SearchFormSetSelect } from "./search-form-set-select";
 import { SearchFormCardNumber } from "./search-form-card-number";
 import { useSearchForm } from "./search-form";
 import { useSets } from "@/hooks/use-sets";
-import { SearchResultsTable } from "./search-results-table"; // Import the table component
+import { useCards } from "@/hooks/use-cards";
 
 export const SearchFormFilters: React.FC = () => {
-  const { cardNumber, selectedSet, selectedCategory, searchQuery, setSearchQuery, setSearchData, searchData } = useSearchForm();
-  const { fetchCardByNumber } = useSets(selectedCategory);
+  const { cardNumber, selectedSet, selectedCategory, searchQuery, setSearchQuery, setSearchData } = useSearchForm();
+  const { fetchCardsBySetNameAndCardNumber, fetchCardsBySetName } = useSets(selectedCategory);
+  const { fetchCardsByCardNumber, fetchCardsByGame } = useCards();
 
   const handleSearch = async () => {
     console.log("Searching with", { searchQuery, cardNumber, selectedSet });
-  
+
     try {
+      if (!selectedSet && !cardNumber && !searchQuery) {
+        console.log("Please provide at least a set, card number, or search query.");
+        return;
+      }
+
+      // Search by card number and set name
       if (cardNumber && selectedSet) {
-        const data = await fetchCardByNumber(selectedCategory, selectedSet, cardNumber);
-        setSearchData(data); // Set the search data in the context
+        const data = await fetchCardsBySetNameAndCardNumber(selectedCategory, selectedSet, cardNumber);
+        setSearchData(data);
         console.log("Card Data:", data);
-      } else {
-        console.log("Please provide both a set and card number.");
+        return;
+      }
+
+      // Search by set name only
+      if (selectedSet) {
+        const data = await fetchCardsBySetName(selectedCategory, selectedSet);
+        setSearchData(data);
+        console.log("Card Data by Set Name:", data);
+        return;
+      }
+
+      // Search by card number only
+      if (cardNumber) {
+        const data = await fetchCardsByCardNumber(selectedCategory, cardNumber);
+        setSearchData(data);
+        console.log("Card Data:", data);
+        return;
+      }
+
+      // Search by game and query (newly added functionality)
+      if (searchQuery) {
+        if (selectedCategory !== "all") {
+          const data = await fetchCardsByGame(selectedCategory, searchQuery);
+          setSearchData(data);
+          console.log("Card Data by Search Query:", data);
+          return;
+        } else {
+          const data = await fetchCardsByGame(selectedCategory, searchQuery);
+          setSearchData(data);
+          console.log("Card Data by Search Query:", data);
+          return;
+        }
+
       }
     } catch (error) {
       console.error("Error during search:", error);
@@ -68,9 +106,6 @@ export const SearchFormFilters: React.FC = () => {
                 </Button>
               </div>
             </div>
-
-            {/* Display Search Results Table */}
-            {searchData && <SearchResultsTable />}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

@@ -1,4 +1,4 @@
-# Collectibles TCG Reference Bot
+# TCG Price Guide - Bot
 
 The **TCG Reference Bot** is a web scraper and DynamoDB integration tool designed to track card data from various Trading Card Games (TCGs). The project scrapes card data from TCGPlayer price guide URLs, processes the data, and stores it both as local CSV and JSON files, while also adding it to an AWS DynamoDB database. This provides an easy reference system for TCG cards, including metadata such as rarity, set, price, and more.
 
