@@ -10,6 +10,10 @@ const gameNameMap: Record<string, string> = {
   "pokemon": "Pokemon",
 };
 
+function normalizeString(input: string): string {
+  return input.replace(/[\W_]+/g, " ").trim().toLowerCase();
+}
+
 // Helper function to validate game and retrieve gameName
 const getGameName = (game: string): string | null => gameNameMap[game] || null;
 
@@ -152,6 +156,103 @@ export const cardsBySetName = async (req: Request, res: Response) => {
         ":skPrefix": skPrefix,
       },
     };
+
+    const command = new QueryCommand(params);
+    const response = await docClient.send(command);
+
+    if (response.Items && response.Items.length > 0) {
+      res.status(200).json({
+        data: response.Items,
+      });
+    } else {
+      res.status(404).json({ message: "Set cards not found." });
+    }
+  } catch (error) {
+    console.error("Error retrieving card:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const cardsBySetNameAndCardNumberAndCardName = async (req: Request, res: Response) => {
+  res.set(CONTENT_TYPE_HEADER);
+
+  const { game, setName, cardNumber } = req.params;
+  const { query } = req.query;
+  console.log(`QUERY IS: ${query}`);
+
+  // Validate and format game name
+  const gameName = getGameName(game);
+  if (!gameName) {
+    return res.status(400).json({ message: "Invalid game specified." });
+  }
+
+  const formattedSetName = formatSetName(setName);
+  console.log(formattedSetName);
+  const skPrefix = `CARD#${cardNumber.toUpperCase()}`;
+
+  const params: any = {
+    TableName: TABLE_NAME,
+    IndexName: "setNameAndSortKeyIndex",
+    KeyConditionExpression: "SetName = :setName AND begins_with(SK, :skPrefix)",
+    ExpressionAttributeValues: {
+      ":setName": formattedSetName,
+      ":skPrefix": skPrefix,
+    },
+  };
+
+  if (query) {
+    const normalizedQuery = normalizeString(query as string);
+    params.FilterExpression = "contains(NormalizedCardName, :query)";
+    params.ExpressionAttributeValues![":query"] = normalizedQuery;
+  }
+
+  try {
+    const response = await docClient.send(new QueryCommand(params));
+
+    if (response.Items && response.Items.length > 0) {
+      res.status(200).json({
+        data: response.Items,
+      });
+    } else {
+      res.status(404).json({ message: "Cards not found for the specified set and card number." });
+    }
+  } catch (error) {
+    console.error("Error retrieving cards by set and card number:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const cardsBySetNameAndCardName = async (req: Request, res: Response) => {
+  res.set(CONTENT_TYPE_HEADER);
+
+  try {
+    const { game, setName } = req.params;
+    const { query } = req.query;
+    console.log(`QUERY ISsss: ${query}`);
+
+    const gameName = getGameName(game);
+    if (!gameName) {
+      return res.status(400).json({ message: "Invalid game specified." });
+    }
+  
+    const skPrefix = `CARD#`;
+
+    const params: any = {
+      TableName: TABLE_NAME,
+      IndexName: "setNameAndSortKeyIndex",
+      KeyConditionExpression:
+        "SetName = :setName AND begins_with(SK, :skPrefix)",
+      ExpressionAttributeValues: {
+        ":setName": formatSetName(setName),
+        ":skPrefix": skPrefix,
+      },
+    };
+
+    if (query) {
+      const normalizedQuery = normalizeString(query as string);
+      params.FilterExpression = "contains(NormalizedCardName, :query)";
+      params.ExpressionAttributeValues![":query"] = normalizedQuery;
+    }
 
     const command = new QueryCommand(params);
     const response = await docClient.send(command);

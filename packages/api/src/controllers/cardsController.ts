@@ -131,3 +131,50 @@ export const cardsByCardNumber = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
+
+export const cardsByCardNumberAndCardName = async (req: Request, res: Response) => {
+    res.setHeader("Content-Type", "application/vnd.api+json");
+  
+    try {
+      const { game, cardNumber } = req.params;
+      const { query } = req.query;
+      console.log(`QUERY IS: ${query}`);
+      const gameName = getGameName(game);
+      if (!gameName) {
+        return res.status(400).json({ message: "Invalid game specified." });
+      }
+  
+      const skPrefix = `CARD#${cardNumber}#`;
+  
+      const params: any = {
+        TableName: TABLE_NAME,
+        IndexName: "gameNameAndSortKeyIndex",
+        KeyConditionExpression: "Game = :game AND begins_with(SK, :skPrefix)",
+        ExpressionAttributeValues: {
+          ":game": gameName,
+          ":skPrefix": skPrefix,
+        },
+      };
+      
+
+  if (query) {
+    const normalizedQuery = normalizeString(query as string);
+    params.FilterExpression = "contains(NormalizedCardName, :query)";
+    params.ExpressionAttributeValues![":query"] = normalizedQuery;
+  }
+  
+      const command = new QueryCommand(params);
+      const response = await docClient.send(command);
+  
+      if (response.Items && response.Items.length > 0) {
+        res.status(200).json({
+          data: response.Items,
+        });
+      } else {
+        res.status(404).json({ message: "Set cards not found." });
+      }
+    } catch (error) {
+      console.error("Error retrieving card:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
+  };

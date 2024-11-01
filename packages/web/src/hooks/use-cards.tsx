@@ -1,4 +1,5 @@
 const API_BASE_URL = "https://api.tcg-price-guide.com/v1/cards";
+//const API_BASE_URL = "http://localhost:5001/v1/cards";
 
 export type SetCategories = "all" | "one-piece" | "pokemon";
 
@@ -46,9 +47,21 @@ export const useCards = () => {
     }
   };
 
+  const fetchCardsByNumberAndQuery = async (game: SetCategories, cardNumber: string, query: string) => {
+    const fetchUrl = `${API_BASE_URL}/${encodeURIComponent(game)}/number/${encodeURIComponent(cardNumber)}/search?query=${encodeURIComponent(query)}`;
+    try {
+      const response = await fetch(fetchUrl);
+      if (!response.ok) throw new Error("Failed to fetch card data.");
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching card by number:", error);
+      throw error;
+    }
+};
   return {
     fetchCardsByCardNumber,
     fetchCardsByGame,
     fetchCards,
+    fetchCardsByNumberAndQuery
   };
 };

@@ -17,8 +17,8 @@ import { useCards } from "@/hooks/use-cards";
 
 export const SearchFormFilters: React.FC = () => {
   const { cardNumber, selectedSet, selectedCategory, searchQuery, setSearchQuery, setSearchData } = useSearchForm();
-  const { fetchCardsBySetNameAndCardNumber, fetchCardsBySetName } = useSets(selectedCategory);
-  const { fetchCardsByCardNumber, fetchCardsByGame } = useCards();
+  const { fetchCardsBySetNameAndCardNumber, fetchCardsBySetName, fetchCardsBySetNameAndCardNumberAndQuery, fetchCardsBySetNameAndQuery} = useSets(selectedCategory);
+  const { fetchCardsByCardNumber, fetchCardsByGame, fetchCardsByNumberAndQuery } = useCards();
 
   const handleSearch = async () => {
     console.log("Searching with", { searchQuery, cardNumber, selectedSet });
@@ -29,11 +29,33 @@ export const SearchFormFilters: React.FC = () => {
         return;
       }
 
+      if (cardNumber && selectedSet && searchQuery) {
+        console.log("Search for all three..");
+        const data = await fetchCardsBySetNameAndCardNumberAndQuery(selectedCategory, selectedSet, cardNumber, searchQuery);
+        setSearchData(data);
+        console.log("Card Data11:", data);
+        return;
+      }
+
       // Search by card number and set name
       if (cardNumber && selectedSet) {
         const data = await fetchCardsBySetNameAndCardNumber(selectedCategory, selectedSet, cardNumber);
         setSearchData(data);
         console.log("Card Data:", data);
+        return;
+      }
+
+      if (cardNumber && searchQuery) {
+        const data = await fetchCardsByNumberAndQuery(selectedCategory, cardNumber, searchQuery);
+        setSearchData(data);
+        console.log("Card Dataaa:", data);
+        return;
+      }
+
+      if (selectedSet && searchQuery) {
+        const data = await fetchCardsBySetNameAndQuery(selectedCategory, selectedSet, searchQuery);
+        setSearchData(data);
+        console.log("Card Data1212:", data);
         return;
       }
 

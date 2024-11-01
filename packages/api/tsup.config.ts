@@ -5,8 +5,8 @@ export default defineConfig((options: Options) => ({
   clean: true,
   format: ["cjs"],
   ...options,
-}));*/
-
+}));
+*/
 
 import { defineConfig } from "tsup";
 import packageJson from "./package.json";
