@@ -11,8 +11,16 @@ export interface SearchCriteriaTabs {
 }
 
 export const searchCriteriaTabs: SearchCriteriaTabs[] = [
-  { name: "One Piece", value: "one-piece", content: "Search for One Piece trading cards." },
-  { name: "Pokemon", value: "pokemon", content: "Search for Pokémon trading cards." },
+  {
+    name: "One Piece",
+    value: "one-piece",
+    content: "Search for One Piece trading cards.",
+  },
+  {
+    name: "Pokemon",
+    value: "pokemon",
+    content: "Search for Pokémon trading cards.",
+  },
   { name: "All", value: "all", content: "Search all trading cards." },
 ];
 
@@ -27,8 +35,14 @@ export const SearchFormTabs: React.FC = () => {
     >
       <TabsList className="grid w-full grid-cols-3 mb-6">
         {searchCriteriaTabs.map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} className="flex items-center justify-center">
-            {tab.value === "all" ? <InfinityIcon className="mr-2 h-4 w-4" /> : null}
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            className="flex items-center justify-center"
+          >
+            {tab.value === "all" ? (
+              <InfinityIcon className="mr-2 h-4 w-4" />
+            ) : null}
             {tab.name}
           </TabsTrigger>
         ))}

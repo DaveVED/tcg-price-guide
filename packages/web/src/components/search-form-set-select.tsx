@@ -39,7 +39,8 @@ export const SearchFormSetSelect: React.FC = () => {
           className="w-full md:w-1/2 justify-between"
         >
           {selectedSet
-            ? sets?.data?.find((set: Set) => set.SlugSetName === selectedSet)?.SetName
+            ? sets?.data?.find((set: Set) => set.SlugSetName === selectedSet)
+                ?.SetName
             : "Select a set..."}
           <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -59,7 +60,9 @@ export const SearchFormSetSelect: React.FC = () => {
                     key={set.SlugSetName}
                     value={set.SlugSetName}
                     onSelect={(currentValue) => {
-                      setSelectedSet(currentValue === selectedSet ? "" : currentValue);
+                      setSelectedSet(
+                        currentValue === selectedSet ? "" : currentValue,
+                      );
                       setOpen(false);
                     }}
                   >
@@ -67,7 +70,9 @@ export const SearchFormSetSelect: React.FC = () => {
                     <CheckIcon
                       className={cn(
                         "ml-auto h-4 w-4",
-                        selectedSet === set.SlugSetName ? "opacity-100" : "opacity-0"
+                        selectedSet === set.SlugSetName
+                          ? "opacity-100"
+                          : "opacity-0",
                       )}
                     />
                   </CommandItem>

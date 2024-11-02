@@ -5,7 +5,10 @@ export type SetCategories = "all" | "one-piece" | "pokemon";
 
 export const useCards = () => {
   // Function to fetch a specific card by set and card number
-  const fetchCardsByCardNumber = async (game: SetCategories, cardNumber: string) => {
+  const fetchCardsByCardNumber = async (
+    game: SetCategories,
+    cardNumber: string,
+  ) => {
     const fetchUrl = `${API_BASE_URL}/${encodeURIComponent(game)}/number/${encodeURIComponent(cardNumber)}`;
     try {
       const response = await fetch(fetchUrl);
@@ -47,7 +50,11 @@ export const useCards = () => {
     }
   };
 
-  const fetchCardsByNumberAndQuery = async (game: SetCategories, cardNumber: string, query: string) => {
+  const fetchCardsByNumberAndQuery = async (
+    game: SetCategories,
+    cardNumber: string,
+    query: string,
+  ) => {
     const fetchUrl = `${API_BASE_URL}/${encodeURIComponent(game)}/number/${encodeURIComponent(cardNumber)}/search?query=${encodeURIComponent(query)}`;
     try {
       const response = await fetch(fetchUrl);
@@ -57,11 +64,11 @@ export const useCards = () => {
       console.error("Error fetching card by number:", error);
       throw error;
     }
-};
+  };
   return {
     fetchCardsByCardNumber,
     fetchCardsByGame,
     fetchCards,
-    fetchCardsByNumberAndQuery
+    fetchCardsByNumberAndQuery,
   };
 };

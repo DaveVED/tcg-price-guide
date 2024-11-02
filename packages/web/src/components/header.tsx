@@ -1,18 +1,20 @@
 import { ModeToggle } from "./mode-toggle";
 
-export function Header() {
-    return (
-        <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+export const Header = () => {
+  return (
+    <header className="border-b font-sans">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold flex items-center">
-          <span className="bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text">
-            TCG Price Guide
+          <span className="text-purple-600">TCG</span>
+          <span className="text-slate-700 dark:text-slate-300 ml-2">
+            Price Guide
           </span>
-          <span className="ml-2 text-xs bg-purple-700 px-2 py-1 rounded-full text-purple-200 uppercase tracking-wide">
+          <span className="ml-2 text-[0.65rem] bg-purple-600 px-1.5 py-[0.15rem] rounded-md text-white uppercase tracking-wide self-center leading-tight">
             Beta
           </span>
-        </h1>          <ModeToggle />
-        </div>
-      </header>
-    );
-}
+        </h1>
+        <ModeToggle />
+      </div>
+    </header>
+  );
+};

@@ -1,18 +1,24 @@
-import React, { useState } from "react"
-import { useSearchForm } from "./search-form"
-import { Table, TableHeader, TableRow, TableCell, TableBody, TableHead } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { ExternalLink } from "lucide-react"
-import { Button } from "./ui/button"
-import { Badge } from "./ui/badge"
-
+import React, { useState } from "react";
+import { useSearchForm } from "./search-form";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableHead,
+} from "@/components/ui/table";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ExternalLink } from "lucide-react";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 export const SearchResultsTable: React.FC = () => {
-  const { searchData } = useSearchForm()
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const { searchData } = useSearchForm();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (!searchData || !searchData.data || searchData.data.length === 0) {
-    return <div>No results found.</div>
+    return <div>No results found.</div>;
   }
 
   return (
@@ -40,13 +46,20 @@ export const SearchResultsTable: React.FC = () => {
                       src={`https://cdn.tcg-price-guide.com/${card.S3Key}`}
                       alt={`${card.CardName} image`}
                       className="w-10 h-15 object-cover cursor-pointer"
-                      onClick={() => setSelectedImage(`https://cdn.tcg-price-guide.com/${card.S3Key}`)}
+                      onClick={() =>
+                        setSelectedImage(
+                          `https://cdn.tcg-price-guide.com/${card.S3Key}`,
+                        )
+                      }
                     />
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <div className="mt-4">
                       <img
-                        src={selectedImage || "/placeholder.svg?height=300&width=200"}
+                        src={
+                          selectedImage ||
+                          "/placeholder.svg?height=300&width=200"
+                        }
                         alt={`${card.CardName} full image`}
                         className="w-full h-auto object-contain"
                       />
@@ -61,7 +74,9 @@ export const SearchResultsTable: React.FC = () => {
               <TableCell>{card.SetName}</TableCell>
               <TableCell>
                 <div className="flex flex-wrap gap-1">
-                  {card.AlternateArt && <Badge variant="secondary">Alt Art</Badge>}
+                  {card.AlternateArt && (
+                    <Badge variant="secondary">Alt Art</Badge>
+                  )}
                   {card.Manga && <Badge variant="secondary">Manga</Badge>}
                   {card.Parallel && <Badge variant="secondary">Parallel</Badge>}
                 </div>
@@ -69,7 +84,7 @@ export const SearchResultsTable: React.FC = () => {
               <TableCell>
                 <Button variant="ghost" size="sm" asChild>
                   <a
-                    href={`https://www.tcgplayer.com/product/${card.CardName.replace(/\s+/g, '-').toLowerCase()}`}
+                    href={`https://www.tcgplayer.com/product/${card.CardName.replace(/\s+/g, "-").toLowerCase()}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center"
@@ -83,5 +98,5 @@ export const SearchResultsTable: React.FC = () => {
         </TableBody>
       </Table>
     </>
-  )
-}
+  );
+};

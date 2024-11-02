@@ -22,7 +22,8 @@ export type SearchFormContextType = {
   setSearchData: (data: any) => void;
 };
 
-export const SearchFormContext = React.createContext<SearchFormContextType | null>(null);
+export const SearchFormContext =
+  React.createContext<SearchFormContextType | null>(null);
 
 export const useSearchForm = (): SearchFormContextType => {
   const context = useContext(SearchFormContext);
@@ -32,12 +33,23 @@ export const useSearchForm = (): SearchFormContextType => {
   return context;
 };
 
-export const SearchFormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedCategory, setSelectedCategory] = React.useState<SetCategories>("one-piece");
+export const SearchFormProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [selectedCategory, _setSelectedCategory] =
+    React.useState<SetCategories>("one-piece");
   const [cardNumber, setCardNumber] = React.useState<string>("");
   const [selectedSet, setSelectedSet] = React.useState<string>("");
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchData, setSearchData] = React.useState<any>(null);
+
+  const setSelectedCategory = (input: SetCategories) => {
+    setSearchQuery("");
+    setCardNumber("");
+    setSelectedSet("");
+    
+    _setSelectedCategory(input);
+  }
 
   const contextValue = useMemo(
     () => ({
@@ -52,7 +64,7 @@ export const SearchFormProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       searchData,
       setSearchData,
     }),
-    [selectedCategory, cardNumber, selectedSet, searchQuery, searchData]
+    [selectedCategory, cardNumber, selectedSet, searchQuery, searchData],
   );
 
   return (
@@ -67,9 +79,11 @@ export const SearchForm: React.FC = () => {
     <div className="max-w-4xl mx-auto p-4">
       <Card className="shadow-none border-none">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Find Your Card's Value</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            Find Your Card's Value
+          </CardTitle>
           <CardDescription>
-            Select a category and search for your card using the filters below. 
+            Select a category and search for your card using the filters below.
           </CardDescription>
         </CardHeader>
         <CardContent>

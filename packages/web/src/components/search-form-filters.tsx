@@ -16,83 +16,142 @@ import { useSets } from "@/hooks/use-sets";
 import { useCards } from "@/hooks/use-cards";
 
 export const SearchFormFilters: React.FC = () => {
-  const { cardNumber, selectedSet, selectedCategory, searchQuery, setSearchQuery, setSearchData } = useSearchForm();
-  const { fetchCardsBySetNameAndCardNumber, fetchCardsBySetName, fetchCardsBySetNameAndCardNumberAndQuery, fetchCardsBySetNameAndQuery} = useSets(selectedCategory);
-  const { fetchCardsByCardNumber, fetchCardsByGame, fetchCardsByNumberAndQuery } = useCards();
+  const {
+    cardNumber,
+    selectedSet,
+    selectedCategory,
+    searchQuery,
+    setSearchQuery,
+    setSearchData,
+  } = useSearchForm();
+  const {
+    fetchCardsBySetNameAndCardNumber,
+    fetchCardsBySetName,
+    fetchCardsBySetNameAndCardNumberAndQuery,
+    fetchCardsBySetNameAndQuery,
+  } = useSets(selectedCategory);
+  const {
+    fetchCardsByCardNumber,
+    fetchCardsByGame,
+    fetchCardsByNumberAndQuery,
+  } = useCards();
 
   const handleSearch = async () => {
     console.log("Searching with", { searchQuery, cardNumber, selectedSet });
+    let response = null;
 
     try {
+      // Validate that at least one search criterion is provided
       if (!selectedSet && !cardNumber && !searchQuery) {
-        console.log("Please provide at least a set, card number, or search query.");
+        console.log(
+          "Please provide at least a set, card number, or search query.",
+        );
         return;
       }
 
       if (cardNumber && selectedSet && searchQuery) {
-        console.log("Search for all three..");
-        const data = await fetchCardsBySetNameAndCardNumberAndQuery(selectedCategory, selectedSet, cardNumber, searchQuery);
-        setSearchData(data);
-        console.log("Card Data11:", data);
+        response = await fetchCardsBySetNameAndCardNumberAndQuery(
+          selectedCategory,
+          selectedSet,
+          cardNumber,
+          searchQuery,
+        );
+        console.log("Card Data with all criteria:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
+        }
         return;
       }
 
-      // Search by card number and set name
       if (cardNumber && selectedSet) {
-        const data = await fetchCardsBySetNameAndCardNumber(selectedCategory, selectedSet, cardNumber);
-        setSearchData(data);
-        console.log("Card Data:", data);
+        response = await fetchCardsBySetNameAndCardNumber(
+          selectedCategory,
+          selectedSet,
+          cardNumber,
+        );
+        console.log("Card Data by Set and Card Number:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
+        }
         return;
       }
 
       if (cardNumber && searchQuery) {
-        const data = await fetchCardsByNumberAndQuery(selectedCategory, cardNumber, searchQuery);
-        setSearchData(data);
-        console.log("Card Dataaa:", data);
+        response = await fetchCardsByNumberAndQuery(
+          selectedCategory,
+          cardNumber,
+          searchQuery,
+        );
+        console.log("Card Data by Card Number and Query:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
+        }
         return;
       }
 
       if (selectedSet && searchQuery) {
-        const data = await fetchCardsBySetNameAndQuery(selectedCategory, selectedSet, searchQuery);
-        setSearchData(data);
-        console.log("Card Data1212:", data);
-        return;
-      }
-
-      // Search by set name only
-      if (selectedSet) {
-        const data = await fetchCardsBySetName(selectedCategory, selectedSet);
-        setSearchData(data);
-        console.log("Card Data by Set Name:", data);
-        return;
-      }
-
-      // Search by card number only
-      if (cardNumber) {
-        const data = await fetchCardsByCardNumber(selectedCategory, cardNumber);
-        setSearchData(data);
-        console.log("Card Data:", data);
-        return;
-      }
-
-      // Search by game and query (newly added functionality)
-      if (searchQuery) {
-        if (selectedCategory !== "all") {
-          const data = await fetchCardsByGame(selectedCategory, searchQuery);
-          setSearchData(data);
-          console.log("Card Data by Search Query:", data);
-          return;
-        } else {
-          const data = await fetchCardsByGame(selectedCategory, searchQuery);
-          setSearchData(data);
-          console.log("Card Data by Search Query:", data);
-          return;
+        response = await fetchCardsBySetNameAndQuery(
+          selectedCategory,
+          selectedSet,
+          searchQuery,
+        );
+        console.log("Card Data by Set Name and Query:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
         }
+        return;
+      }
 
+      if (selectedSet) {
+        response = await fetchCardsBySetName(selectedCategory, selectedSet);
+        console.log("Card Data by Set Name:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
+        }
+        return;
+      }
+
+      if (cardNumber) {
+        response = await fetchCardsByCardNumber(selectedCategory, cardNumber);
+        console.log("Card Data by Card Number:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
+        }
+        return;
+      }
+
+      if (searchQuery) {
+        response = await fetchCardsByGame(selectedCategory, searchQuery);
+        console.log("Card Data by Search Query:", response);
+        if (response && response.data) {
+          formatAndSetData(response.data);
+        }
       }
     } catch (error) {
       console.error("Error during search:", error);
     }
+  };
+
+  const formatAndSetData = (data: any[]) => {
+    const formattedData = data.map((item: any) => {
+      const flags = [];
+      if (item.AlternateArt) flags.push("Alternate Art");
+      if (item.Manga) flags.push("Manga");
+      if (item.Parallel) flags.push("Parallel");
+      console.log("HERE");
+      console.log(item.Game);
+      return {
+        imageUri: `https://cdn.tcg-price-guide.com/${item.S3Key}`,
+        cardName: item.CardName,
+        rarity: item.Rarity,
+        cardNumber: item.SK.split("#")[1],
+        marketPrice: item.Price,
+        setName: item.SetName,
+        flags,
+        game: item.Game,
+      };
+    });
+    setSearchData(formattedData);
   };
 
   return (
@@ -122,7 +181,10 @@ export const SearchFormFilters: React.FC = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-grow"
                 />
-                <Button onClick={handleSearch} className="w-32 flex items-center justify-center space-x-2">
+                <Button
+                  onClick={handleSearch}
+                  className="w-32 flex items-center justify-center space-x-2"
+                >
                   <SearchIcon className="h-4 w-4" />
                   <span>Search</span>
                 </Button>

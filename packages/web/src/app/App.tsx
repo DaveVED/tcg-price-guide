@@ -9,7 +9,7 @@ function App() {
         <SearchForm />
       </main>
     </div>
-  )
+  );
 }
 
 export default App;

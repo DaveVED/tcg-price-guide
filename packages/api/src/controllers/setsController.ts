@@ -7,11 +7,14 @@ const CONTENT_TYPE_HEADER = { "Content-Type": "application/vnd.api+json" };
 
 const gameNameMap: Record<string, string> = {
   "one-piece": "OnePiece",
-  "pokemon": "Pokemon",
+  pokemon: "Pokemon",
 };
 
 function normalizeString(input: string): string {
-  return input.replace(/[\W_]+/g, " ").trim().toLowerCase();
+  return input
+    .replace(/[\W_]+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
 // Helper function to validate game and retrieve gameName
@@ -74,7 +77,9 @@ export const setsByGame = async (req: Request, res: Response) => {
     if (response.Items?.length) {
       res.status(200).json({ data: response.Items });
     } else {
-      res.status(404).json({ message: "No sets found for the specified game." });
+      res
+        .status(404)
+        .json({ message: "No sets found for the specified game." });
     }
   } catch (error) {
     console.error("Error retrieving sets by game:", error);
@@ -104,7 +109,7 @@ export const cardsBySetAndCardNumber = async (req: Request, res: Response) => {
   }
 
   const formattedSetName = formatSetName(setName);
-  console.log(formattedSetName)
+  console.log(formattedSetName);
   const skPrefix = `CARD#${cardNumber.toUpperCase()}`;
 
   const params = {
@@ -125,7 +130,9 @@ export const cardsBySetAndCardNumber = async (req: Request, res: Response) => {
         data: response.Items,
       });
     } else {
-      res.status(404).json({ message: "Cards not found for the specified set and card number." });
+      res.status(404).json({
+        message: "Cards not found for the specified set and card number.",
+      });
     }
   } catch (error) {
     console.error("Error retrieving cards by set and card number:", error);
@@ -138,12 +145,12 @@ export const cardsBySetName = async (req: Request, res: Response) => {
 
   try {
     const { game, setName } = req.params;
-    
+
     const gameName = getGameName(game);
     if (!gameName) {
       return res.status(400).json({ message: "Invalid game specified." });
     }
-  
+
     const skPrefix = `CARD#`;
 
     const params = {
@@ -173,7 +180,10 @@ export const cardsBySetName = async (req: Request, res: Response) => {
   }
 };
 
-export const cardsBySetNameAndCardNumberAndCardName = async (req: Request, res: Response) => {
+export const cardsBySetNameAndCardNumberAndCardName = async (
+  req: Request,
+  res: Response,
+) => {
   res.set(CONTENT_TYPE_HEADER);
 
   const { game, setName, cardNumber } = req.params;
@@ -214,7 +224,9 @@ export const cardsBySetNameAndCardNumberAndCardName = async (req: Request, res: 
         data: response.Items,
       });
     } else {
-      res.status(404).json({ message: "Cards not found for the specified set and card number." });
+      res.status(404).json({
+        message: "Cards not found for the specified set and card number.",
+      });
     }
   } catch (error) {
     console.error("Error retrieving cards by set and card number:", error);
@@ -222,7 +234,10 @@ export const cardsBySetNameAndCardNumberAndCardName = async (req: Request, res: 
   }
 };
 
-export const cardsBySetNameAndCardName = async (req: Request, res: Response) => {
+export const cardsBySetNameAndCardName = async (
+  req: Request,
+  res: Response,
+) => {
   res.set(CONTENT_TYPE_HEADER);
 
   try {
@@ -234,7 +249,7 @@ export const cardsBySetNameAndCardName = async (req: Request, res: Response) => 
     if (!gameName) {
       return res.status(400).json({ message: "Invalid game specified." });
     }
-  
+
     const skPrefix = `CARD#`;
 
     const params: any = {
